@@ -1,0 +1,28 @@
+version: '3.7'
+
+services:
+  flask:
+    image: flask
+    container_name: flask
+    restart: unless-stopped
+
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.flask.entrypoints=http"
+      - "traefik.http.routers.flask.rule=Host(`example.org`)"
+      - "traefik.http.middlewares.flask-https-redirect.redirectscheme.scheme=https"
+      - "traefik.http.routers.flask.middlewares=flask-https-redirect"
+      - "traefik.http.routers.flask-secure.entrypoints=https"
+      - "traefik.http.routers.flask-secure.rule=Host(`example.org`)"
+      - "traefik.http.routers.flask-secure.tls=true"
+      - "traefik.http.routers.flask-secure.tls.certresolver=http"
+      - "traefik.http.routers.flask-secure.service=flask"
+      - "traefik.http.services.flask.loadbalancer.server.port=80"
+      - "traefik.docker.network=traefik"
+      - "traefik.http.routers.flask-secure.middlewares=secHeaders@file"
+    networks:
+      - traefik
+
+networks:
+  traefik:
+    external: true

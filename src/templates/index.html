@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1 align="center">Adventskalender</h1>
+    {% for id_batch in order|batch(6) %}
+        {% for id in id_batch %}
+            {% if id in images %}
+                <div style="background-color: black; width: 200px; float:left; height: 200px; margin: 20px;" onclick="reveal{{ id }}()" id="{{ id }}">
+                    <img src=static/images/numbers/{{ id }}.jpg>
+                </div>
+                <script>
+                    function reveal{{ id }}() {
+                        document.getElementById("{{ id }}").innerHTML = "<a target='_blank' rel='noopener noreferrer' href='static/images/full/{{ images.get(id) }}.jpg'><img src='static/images/thumb/{{ images.get(id) }}.jpg'></a>"
+                    }
+                </script>
+            {% else %}
+                <div style="background-color: black; width: 200px; float:left; height: 200px; margin: 20px" id="{{ id }}">
+                    <img src=static/images/numbers/{{ id }}.jpg>
+                </div>
+            {% endif %}
+        {% endfor %}
+        <div style="height: 240px; display: block;"></div>
+    {% endfor %}
+{% endblock %}
